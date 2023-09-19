@@ -59,5 +59,14 @@ public class NoticeController {
 		return "redirect:./list";
 	}
 	
+	@GetMapping("detail")
+	public String detail(NoticeVO noticeVO, Model model) throws Exception{
+		
+		// BoardVo 타임에서 형변환해야 함. 
+		noticeVO = (NoticeVO)noticeService.getDetail(noticeVO);
+		model.addAttribute("list", noticeVO);
+		return "board/detail";
+	}
+	
 	
 }

@@ -10,5 +10,11 @@ import com.winter.app.commons.Pager;
 	
 	/** 부모 인터페이스에 고대로 집어넣으면, 상속받은 애가 고대로 가져갈거 아냐. */
 	public int add(BoardVO boardVO) throws Exception;
+	
+	public BoardVO getDetail(BoardVO boardVO)throws Exception;
+	
+	public int setUpdate (BoardVO boardVO)throws Exception;
+	
+	public int setDelete(BoardVO boardVO)throws Exception;
 
 }
