@@ -60,11 +60,10 @@ public class NoticeController {
 	}
 	
 	@GetMapping("detail")
-	public String detail(NoticeVO noticeVO, Model model) throws Exception{
+	public String detail(BoardVO boardVO, Model model) throws Exception{
 		
-		// BoardVo 타임에서 형변환해야 함. 
-		noticeVO = (NoticeVO)noticeService.getDetail(noticeVO);
-		model.addAttribute("list", noticeVO);
+		boardVO = noticeService.getDetail(boardVO);
+		model.addAttribute("list", boardVO);
 		return "board/detail";
 	}
 	
