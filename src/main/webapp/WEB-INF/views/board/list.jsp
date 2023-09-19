@@ -47,10 +47,16 @@
 	     					 				<td>${vo.boardHit}</td>
 	     					 			</tr>
 	     					 		</c:forEach>
-	     					 	</tbody>
-	     					 	
+	     					 	</tbody>	
 	     					 </table>
 	     					 </div>
+	     					 <!-- 글작성 버튼 -->
+	     					 <a href="./add" class="btn btn-primary btn-icon-split">
+                               <span class="icon text-white-50">
+                                  <i class="fas fa-flag"></i>
+                               </span>
+                               <span class="text">글작성</span>
+                            </a>
 	     				</div>
 	     			 </div>
 	    	
