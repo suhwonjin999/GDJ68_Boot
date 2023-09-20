@@ -24,7 +24,7 @@
 	     			<!-- 글작성 버튼 클릭 시 보여지는 페이지 -->
 	     			<!-- Contents 에 제목, 작성자, 내용 입력, row: 가로 하나를 의미함. -->
 	     			<div class="row col-sm-12">
-	     			  <form action="add" method="post">
+	     			  <form action="add" method="post" enctype="multipart/form-data">
 	     			  	<div class="mb-3">
 	     			  	<label for="boardTitle" class="form-label">Title</label>
 	     			  	<input type="text" class="form-control" id="boardTitle" name="boardTitle" placeholder="제목을 입력하세요">
@@ -38,6 +38,16 @@
 	     			  	<div class="mb-3">
 	     			  	<label for="boardContents" class="form-label">Contents</label>
 	     			  	<textarea class="form-control" id="boardContents" name="boardContents" placeholder="내용을 입력하세요"></textarea>
+	     			  	</div>
+	     			  	
+	     			  	<div class="mb-3">
+						<!-- 파일업로드 -->
+	     			  	<input type="file" class="form-control" name="files">
+	     			  	</div>
+	     			  	
+	     			  	<div class="mb-3">
+						<!-- 파일업로드 -->
+	     			  	<input type="file" class="form-control" name="files">
 	     			  	</div>
 	     			  	
 	     			  	<button class="btn btn-danger">Add</button>

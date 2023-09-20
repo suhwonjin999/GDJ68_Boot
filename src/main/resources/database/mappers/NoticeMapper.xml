@@ -64,19 +64,56 @@
   </select>
   
   <!-- 데이터 등록(INSERT) -->
-  <insert id="add" parameterType="BoardVO">
+  <!-- 1씩 증가되는 기능 : useGenerateKeys -->
+  <!-- 쿼리 실행 순서: INSERT 쿼리가 먼저 실행되어 등록한 후 발생된 키를 이용하여 1씩 증가하게 만듦.  -->
+  <insert id="add" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="boardNo">
+<!-- Oracle 방식 -->
+<!--  <selectKey keyProperty="boardNo" order="BEFORE" resultType="Long"> -->
+<!--   	SELECT SEQ.NEXTVAL FROM DUAL -->
+<!--  </selectKey> -->
   <!-- 데이터가 추가되면 자동으로 1씩 따라 증가되는 기능 : 0 혹은 NULL을 집어넣어야 자동으로 시퀀스 기능을 한다. -->
   <!-- 수정은 boardTitle, boardContents만 가능하다.  -->
+<!-- HIT(조회수)가 {boardNo} 라면 NULL값이 먼저 들어온다. -->
   	INSERT INTO NOTICE
   	VALUES (NULL, #{boardTitle}, #{boardWriter}, #{boardContents}, NOW(), 0)
   </insert>
   
+  <insert id="fileAdd" parameterType="NoticeFileVO">
+  	INSERT INTO NOTICEFILES
+  	VALUES(#{fileNO}, #{boardNo}, #{fileName}, #{oriName})
+  </insert>
+  
   
   <!-- Detail -->
-  	<select id="getDetail" parameterType="BoardVO" resultType="NoticeVO">
-  		SELECT * FROM NOTICE WHERE BOARDNO=#{boardNo}
+  <!-- 글 하나만 꺼내오는게 아니라 첨부한 파일과 같이 불러오기위해 조인해줘야 한다.(ANSI JOIN 방식) -->
+  <!-- INNER 조인 : 무조건 테이블에 값이 들어있는 경우 사용함. -->
+  <!-- 데이터가 있는 방향을 지정함. OUTER JOIN -->
+  <!-- JOIN 조건 : ON, USING  -->
+  <!-- USING : 두 테이블 간 컬럼의 이름이 동일한 경우 사용함. 대신 SELECT 절에서 * 사용하지 못함. -->
+  	<select id="getDetail" parameterType="BoardVO" resultMap="getDetailResult">
+  		SELECT N.*, NF.*
+  		FROM NOTICE N 
+  			 LEFT OUTER JOIN
+  			 NOTICEFILES NF 
+  			 ON N.BOARDNO = NF.BOARDNO
+  		WHERE N.BOARDNO=#{boardNo}
   	</select>
-  
+  <!-- 글 하나에 파일 여러개 : 1대N 관계(DB에서 표현) : (자바식 표현)NOTICE 하나가 파일 여러개를 가지고 있다.(포함하고 있다) -->
+  <!-- 최종적으로 리턴 : NoticeVO -->	
+  	<resultMap type="NoticeVO" id="getDetailResult">
+  		<id column="BOARDNO" property="boardNo"/>
+  		<result column="BOARDTITLE" property="boardTitle"/>
+  		<result column="BOARDWRITER" property="boardWriter"/>
+  		<result column="BOARDCONTENTS" property="boardContents"/>
+  		<result column="BOARDDATE" property="boardDate"/>
+  		<result column="BOARDHIT" property="boardHit"/>
+  		<collection property="list" javaType="java.util.List" ofType="NoticeFileVO">
+  			<id column="FILENO" property="fileNo"/>
+  			<result column="FILENAME" property="fileName"/>
+  			<result column="ORINAME" property="oriName"/>
+  		</collection>
+  	</resultMap>
+  	
   
   <!-- 데이터 변경 시 Update -->
  	<update id="setUpdate" parameterType="BoardVO">
@@ -97,6 +134,11 @@
   	<delete id="setDelete" parameterType="BoardVO">
   		DELETE FROM NOTICE WHERE BOARDNO=#{boardNo}
   	</delete>
+  	
+  	<select id="getFileDetail" parameterType="FileVO" resultType="NoticeFileVO">
+  		SELECT * FROM NOTICEFILES 
+  		WHERE FILENO = #{fileNo}
+  	</select>
   
   
   </mapper>
