@@ -26,6 +26,13 @@
 			<version>1.16</version>
 		</dependency> 
 		
+		<!-- AOP 사용하기 위한 라이브러리 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-aop</artifactId>
+				<!-- 버전 생략 -->
+		</dependency>
+		
 	<!-- -->	
 		<dependency>
 		    <groupId>org.apache.tomcat.embed</groupId>
