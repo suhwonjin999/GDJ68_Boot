@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	
 	@Autowired
-	private NoticeService noticeService;
+//	private NoticeService noticeService;
 	
 /** 모든 메서드에 적용 : 모든 메서드에 포함되어 있다. model.addAttribute("board","notice");
 */	
@@ -42,7 +42,7 @@ public class NoticeController {
 	return 클래스명과 동일하기 때문에, 클래스에 해당하는 메서드를 찾아 실행함.
 	bean의 이름과 동일하지 않을 경우, prifix, sufix 하여 경로를 찾음.
 */		
-		fileVO = noticeService.getFileDetail(fileVO);
+//		fileVO = noticeService.getFileDetail(fileVO);
 		model.addAttribute("fileVO", fileVO);
 		
 /** model fileVO와 board 총 2개가 담김.*/		
@@ -56,10 +56,10 @@ public class NoticeController {
 	@GetMapping("list")
 	public String getList(Pager pager, Model model) throws Exception{
 		
-		List<BoardVO> ar = noticeService.getList(pager);
+//		List<BoardVO> ar = noticeService.getList(pager);
 		
 		// list 호출 시 사용 : list 란 속성명으로 ar 이란 값을 집어넣자.
-		model.addAttribute("list", ar);
+//		model.addAttribute("list", ar);
 //		log.info("getList 실행");
 		log.error("getList 실행");
 		
@@ -75,20 +75,20 @@ public class NoticeController {
 	
 	// DB에 INSERT
 	// NiticeVO가 BoardVO 타입이기 때문에 받아와도 상관없다.
-	@PostMapping("add")
-	public String add(NoticeVO noticeVO, MultipartFile [] files) throws Exception{
+//	@PostMapping("add")
+//	public String add(NoticeVO noticeVO, MultipartFile [] files) throws Exception{
 		// 내가 쓴 글이 파라미터로 제대로 넘어갔는지 보기 위함 (주소가 아니라 멤버변수에 있는 값을 출력하기 위해 ToString 어노테이션을 적어야 함.)
 //		log.info("NoticeVO : {}, {}", noticeVO,noticeVO);
-		log.info("NoticeVO : {}", noticeVO);
+//		log.info("NoticeVO : {}", noticeVO);
 		
 //		데이터를 실제 등록하기 위해 서비스에 있는 메서드를 호출한다.
 		// add메서드를 호출하면서 매개변수 noticeVO을 넘겨준다.
-		int result = noticeService.add(noticeVO, files);
-		System.out.println(result);
+//		int result = noticeService.add(noticeVO, files);
+//		System.out.println(result);
 		
 		// 글 쓰고 나면 list 페이지로 이동함
-		return "redirect:./list";
-	}
+//		return "redirect:./list";
+//	}
 	
 	
 //	@GetMapping("detail")
@@ -98,16 +98,16 @@ public class NoticeController {
 //		return noticeService.getDetail(noticeVO);
 //	}
 	
-	@GetMapping("detail")
-	public String getDetail(NoticeVO noticeVO, Model model) throws Exception{
+//	@GetMapping("detail")
+//	public String getDetail(NoticeVO noticeVO, Model model) throws Exception{
 		
-		BoardVO boardVO = noticeService.getDetail(noticeVO);
-		model.addAttribute("boardVO",boardVO);
+//		BoardVO boardVO = noticeService.getDetail(noticeVO);
+//		model.addAttribute("boardVO",boardVO);
 		// jSP 으로 보냄
 		
-		return "board/detail";
+//		return "board/detail";
 		
-	}
+//	}
 	
 	
 }
