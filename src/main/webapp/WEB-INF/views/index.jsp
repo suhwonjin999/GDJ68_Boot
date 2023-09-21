@@ -29,8 +29,9 @@
 	     			<h1>Welcome : <spring:message code="hello"></spring:message> </h1>
 	     			
 	     			<!-- KEY 값이 존재하지 않는 경우, 코드 자체가 웹 브라우저에 출력됨. -->
+	     			<!-- KEY 값이 존재하지 않는 경우, 코드 대신 text에 기재한 내용이 출력됨. -->
 	     			<!-- application-properties 설정 -->
-	     			<h1><spring:message code="hi"></spring:message></h1>
+	     			<h1><spring:message code="hi" text="기본메세지"></spring:message></h1>
 	     			
 	     		</div>
 	     	</div> 

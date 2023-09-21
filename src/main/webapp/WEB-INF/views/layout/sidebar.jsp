@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -36,13 +37,16 @@
             aria-expanded="true" aria-controls="collapseTwo">
             <!-- fontawesome 페이지 참조하면 아이콘을 불러다 사용할 수 있다. -->
             <i class="fas fa-fw fa-cog"></i>
-            <span>게시판</span>
+            <!-- 다국어 언어 출력 -->
+            <!-- 페이지 이동 후 파라미터가 URL에 안나와도 설정된 언어가 유지되는 이유: 인터셉터에서 세션이 유지될 동안 초기 설정된 언어로 계속 출력됨 -->
+            <span><spring:message code="board"></spring:message></span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
             <!-- 헤드태그 용도 : 제목넣음 -->
             <!-- <h6 class="collapse-header">Custom Components:</h6> -->
-                <a class="collapse-item" href="/notice/list">공지사항</a>
+            <!-- 공지사항 및 문의게시판 -->
+                <a class="collapse-item" href="/notice/list"><spring:message code="board.name"></spring:message></a>
                 <a class="collapse-item" href="/qna/list">QnA</a>
             </div>
         </div>
