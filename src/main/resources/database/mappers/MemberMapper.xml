@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.winter.app.member.memberDAO">
+ 
+  <select id="getMember" parameterType="MemberVO" resultType="MemberVO">
+  <!-- 데이터가 비어있지 않다면 중복이 아니다 -->	
+  	SELECT * FROM MEMBER WHERE USERNAME=#{username}
+  </select>
+  
+  </mapper>

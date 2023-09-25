@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -24,6 +25,29 @@
     </form>
 
     <!-- Topbar Navbar -->
+    <!-- 로그인 되지 않았을 때 보여지는 화면 -->
+    <c:if test="${empty member}">
+    	<ul class="navbar-nav ml-auto">
+    	<!-- 돋보기 아이콘에서 나중에 가입 관련 아이콘으로 바꿀 예정임. -->
+    		<li class="nav-item">
+    		  <a class="nav-link dropdown-toggle" href="/member/join" id="join" role="button" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+    		</li>
+    		
+    		<!-- 로그인 창으로 이동 -->
+    		<li class="nav-item">
+    		  <a class="nav-link dropdown-toggle" href="/member/login" id="join" role="button" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+    		</li>
+    	</ul>
+    </c:if>
+    
+    <!-- 로그인 되어있다면 ul 태그 전체를 보여라. // ul 태그 전체는 로그인 된 상태에서만 보임. -->
+    <!-- member가 비어있지 않다면 ul 태그 전체를 보여라. -->
+    <c:if test="${not empty member}">
+    
     <ul class="navbar-nav ml-auto">
 
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -185,14 +209,15 @@
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/member/update">
                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
+                    정보수정
                 </a>
                 <a class="dropdown-item" href="#">
                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                     Activity Log
                 </a>
+                <!-- 모달창으로 이동 -->
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -200,7 +225,7 @@
                 </a>
             </div>
         </li>
-
     </ul>
+	</c:if>
 </nav>
 <!-- End of Topbar -->
