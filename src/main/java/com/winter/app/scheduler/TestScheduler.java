@@ -59,9 +59,9 @@ public class TestScheduler {
 	public void useCron() throws Exception{
 		
 		log.info("========== 10초 지날때마다 스케줄 만들어줘 ============");
-		Pager pager = new Pager();
-		List<BoardVO> ar = noticeDAO.getList(pager);
-		log.info("List {}:"+ar);
+//		Pager pager = new Pager();
+//		List<BoardVO> ar = noticeDAO.getList(pager);
+//		log.info("List {}:"+ar);
 	
 	}
 	

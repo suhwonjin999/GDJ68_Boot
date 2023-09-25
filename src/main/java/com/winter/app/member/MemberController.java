@@ -38,7 +38,7 @@ public class MemberController {
 		MemberVO memberVO = (MemberVO)session.getAttribute("member");
 		
 		// getLogin : id를 조회하여 패스워드가 맞는지 검증 (수정 시 DB에 바로 업데이트되어 수정된 정보가 바로 반영되니까 DB에서 조회하여 가져옴.)
-		memberVO = memberService.getLogin(memberVO);
+		//memberVO = memberService.getLogin(memberVO);
 		
 		MemberInfoVO memberInfoVO = new MemberInfoVO();
 		memberInfoVO.setName(memberVO.getName());
@@ -77,8 +77,7 @@ public class MemberController {
 		
 	}
 	
-	
-	// 로그인 폼
+//	 로그인 폼
 	@GetMapping("login")
 	// Spring FORM 태그를 사용한다면, 비어있는 빈 태그를 모델에 담아 보내야 한다.
 	// 매개변수 모델을 선언
@@ -86,20 +85,21 @@ public class MemberController {
 		
 	}
 	
+/** Spring Security에서 로그인 기능을 대신 해줘서 지워줌.*/	
 	// 세션에서 memberVO를 꺼냈을 때 null이면 로그인안됨, null이 아니면 로그인 성공
-	@PostMapping("login")
-	public String getLogin2(MemberVO memberVO, HttpSession session) throws Exception{
-		memberVO = memberService.getLogin(memberVO);
-		
-		if(memberVO != null) {
-			session.setAttribute("member", memberVO);
-			return "redirect:../";
-		}
-		
-		// 현재위치에서 로그인 폼으로 가라.
-		return "redirect:./login";
-		
-	}
+//	@PostMapping("login")
+//	public String getLogin2(MemberVO memberVO, HttpSession session) throws Exception{
+//		memberVO = memberService.getLogin(memberVO);
+//		
+//		if(memberVO != null) {
+//			session.setAttribute("member", memberVO);
+//			return "redirect:../";
+//		}
+//		
+//		// 현재위치에서 로그인 폼으로 가라.
+//		return "redirect:./login";
+//		
+//	}
 	
 	// 로그아웃
 	@GetMapping("logout")
@@ -146,12 +146,14 @@ public class MemberController {
 			return "member/join";
 		}
 		
-		// 회원가입 진행
+		// 회원가입 진행 => 비번이 암호화되어 INSERT 되어있는지 DB에서 확인!
+		int result = memberService.setJoin(memberVO);
 		
 		
 		// 에러가 발생하지 않을 경우, index 메인 페이지로 가라.
 	    log.info("photo:{}----size:{}",photo.getOriginalFilename(), photo.getSize());
 	    return "redirect:../";
+	    
 	   }
 
 	

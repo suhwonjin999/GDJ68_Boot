@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -26,7 +27,8 @@
 
     <!-- Topbar Navbar -->
     <!-- 로그인 되지 않았을 때 보여지는 화면 -->
-    <c:if test="${empty member}">
+    <sec:authorize access="!isAuthenticated()">
+<%--     <c:if test="${empty member}"> --%>
     	<ul class="navbar-nav ml-auto">
     	<!-- 돋보기 아이콘에서 나중에 가입 관련 아이콘으로 바꿀 예정임. -->
     		<li class="nav-item">
@@ -42,11 +44,13 @@
               </a>
     		</li>
     	</ul>
-    </c:if>
+<%--     </c:if> --%>
+    	</sec:authorize>
     
     <!-- 로그인 되어있다면 ul 태그 전체를 보여라. // ul 태그 전체는 로그인 된 상태에서만 보임. -->
     <!-- member가 비어있지 않다면 ul 태그 전체를 보여라. -->
-    <c:if test="${not empty member}">
+    <sec:authorize access="isAuthenticated()">
+   <%--  <c:if test="${not empty member}"> --%>
     
     <ul class="navbar-nav ml-auto">
 
@@ -226,6 +230,7 @@
             </div>
         </li>
     </ul>
-	</c:if>
+<%-- 	</c:if> --%>
+   </sec:authorize>
 </nav>
 <!-- End of Topbar -->
