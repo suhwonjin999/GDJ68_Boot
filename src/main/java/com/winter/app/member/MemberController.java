@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +29,11 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	// MyPage
+	@GetMapping("/info")
+	public void getInfo() throws Exception{}
+	
 	
 	// 사용자 정보를 세션에서 꺼내올 수 있지만, DB에서 조회하여 꺼내올 수도 있다.
 	// 사용자가 로그아웃하지 않은 이상, 수정하더라도 아직 업데이트되기 전 정보가 세션에 남아있기 때문에 수정 전 정보만 세션에 남아있다.
@@ -56,7 +62,7 @@ public class MemberController {
 	// 수정된 데이터들은 MemberVO에 담음
 	// BindingResult를 매개변수로 집어넣으면, 검증을 다 한 후 메서드에 들어오게 됨.
 	// name, password 검증에서 제외하려면 어떻게 해야할까?
-	public void setUpdate(@Valid MemberInfoVO memberInfoVO, BindingResult bindingResult) throws Exception{
+	public String setUpdate(@Valid MemberInfoVO memberInfoVO, BindingResult bindingResult) throws Exception{
 		
 		// Error라는 객체가 누구야? 
 		// bindingResult 자체가 Errors 타입이다.
@@ -67,6 +73,11 @@ public class MemberController {
 		
 		// Errors e = ar.get(0);
 		
+		Object obj = SecurityContextHolder.getContext().getAuthentication();
+		// object 타입을 memberVO 타입으로 형변환시킴
+		MemberVO memberVO = (MemberVO) obj;
+// memberVO : 실제 데이터를 가리키는 주소가 출력됨.
+		memberVO.setEmail("UpdateEmail@naver.com");
 		
 		List<FieldError> errors = bindingResult.getFieldErrors();
 		
@@ -74,6 +85,8 @@ public class MemberController {
 		for(FieldError e:errors) {
 			log.info(e.getField());
 		}
+		
+		return "redirect:/";
 		
 	}
 	

@@ -1,5 +1,6 @@
 package com.winter.app.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,16 +10,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.winter.app.member.MemberService;
+
 @Configuration
 @EnableWebSecurity  // 웹 시큐리티 설정을 통해 가져가겠다.
 public class SecurityConfig {
 	
-	// 평문으로 작성된 비밀번호를 암호화 값으로 작업해야 함.
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		// 어떤 객체를 가지고 암호화할 것인가
-		return new BCryptPasswordEncoder();
-	}
+//	@Autowired
+//	private SecuritySuccessHandler handler;
+	
+	@Autowired
+	private MemberService memberService;
+	
 
 	// API 이기 때문에 클래스 선언할 수 없어서 어노테이션을 이용하여 객체 생성한다.
 	@Bean // 객체를 만들어서 Spring FULL에 등록하는 어노테이션 
@@ -49,7 +52,7 @@ public class SecurityConfig {
 			.cors()
 			.and()
 			.csrf()
-			// 실행하지 않겠다
+			// 실행하지 않겠다 (이 정책을 무시하겠다. CORS 정책과 CSRF 정책을 허용하겠다.)
 			.disable()
 			// 권한을 가진다.
 			.authorizeHttpRequests()
@@ -75,14 +78,34 @@ public class SecurityConfig {
 			.logout()
 				// 어떤 URL 주소가 들어왔을 때 로그아웃 시키는가
 				.logoutUrl("/member/logout")
-				.logoutSuccessUrl("/")
+				
+				// 로그아웃 성공했을 때 어디 경로로 가는가
+//				.logoutSuccessUrl("/")
+// 메서드를 만들어서 생성된 객체를 받아오자.				
+				.addLogoutHandler(getLogoutAdd())
+				.logoutSuccessHandler(null)
+				
 				// 세션을 true를 주면 강제종료 시키겠다.
 				.invalidateHttpSession(true)
+				// 쿠키 지워줌
+				.deleteCookies("JSESSIONID") 
 				.and()
+			.remeberMe()
+				.tokenValiditySeconds(60)
+// properties 에 등록하고 key로 등록되는 변수값을 가져오는 방법도 있다.
+				.key("rememberKey")
+				.userDetailsService(memberService)
+//				.authenticationSuccessHandler(handler)
+				
 			.sessionManagement()
 			;
 		
 		return httpSecurity.build();
+	}
+	
+// 로그아웃 할 때 로그아웃한 유저의 정보도 받아올 수 있다.	
+	private ScurityLogoutAdd getLogoutAdd() {
+		return new SecurityLogoutAdd();
 	}
 	
 	

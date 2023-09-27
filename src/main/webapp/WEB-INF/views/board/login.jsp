@@ -41,9 +41,14 @@
 	                 	<form:errors path="password"></form:errors>
 	                 </div>
                  	
+                 	<div class="form-group">
+                 		<label for="remember">RememberMe</label>
+                 		<input type="checkbox" id="remember" name="remember-me">
+	                 </div>
                  	
                  	<button type="submit" class="btn btn-primary">Submit</button>
                    </form:form>
+                   
                    
                    <!-- <form action="./join" method="post" enctype="multipart/form-data"> -->
 <!--            <div class="form-group">

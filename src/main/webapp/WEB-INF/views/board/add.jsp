@@ -25,6 +25,7 @@
 	     			<!-- Contents 에 제목, 작성자, 내용 입력, row: 가로 하나를 의미함. -->
 	     			<div class="row col-sm-12">
 	     			  <form action="add" method="post" enctype="multipart/form-data">
+	     			  	<sec:csrfInput/>
 	     			  	<div class="mb-3">
 	     			  	<label for="boardTitle" class="form-label">Title</label>
 	     			  	<input type="text" class="form-control" id="boardTitle" name="boardTitle" placeholder="제목을 입력하세요">
