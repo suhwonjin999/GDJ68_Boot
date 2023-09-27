@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +25,7 @@ import lombok.ToString;
 @Setter
 @ToString
 // 상속관계 명시
-public class MemberVO extends MemberInfoVO implements UserDetails {
+public class MemberVO extends MemberInfoVO implements UserDetails, OAuth2User {
 
 // 하나의 변수에 어노테이션은 여러개 줄 수 있다.
 // username 은 비어있으면 안된다 (NotBlank)
@@ -40,6 +42,15 @@ public class MemberVO extends MemberInfoVO implements UserDetails {
     // 여러개 RoleVO 타입을 가지고 있다.
     private List<RoleVO> roleVOs;
     
+ // OAuth2User
+    private Map<String, Object> attributes;
+    
+ // OAut2User
+	@Override
+	public Map<String, Object> getAttributes() {
+		// TODO Auto-generated method stub
+		return this.attributes;
+	}
     
 
     /** 인터페이스를 implements 시킨 후, 메서드를 오버라이드시켜야 함.*/
@@ -57,6 +68,7 @@ public class MemberVO extends MemberInfoVO implements UserDetails {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		
 		// roleVOs에서 roleVO 하나씩 꺼내면 객체가 나올것이다.
+		// roleVOs가 null이라면 null 인셉션이 발생함.
 		for(RoleVO roleVO:roleVOs) {
 			// list에 추가하는 메서드: add()
 			authorities.add(new SimpleGrantedAuthority(roleVO.getRoleName()));
@@ -89,6 +101,7 @@ public class MemberVO extends MemberInfoVO implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
 
     // 포함관계 명시
 /**    

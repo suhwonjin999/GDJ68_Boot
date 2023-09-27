@@ -18,6 +18,11 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!-- 소셜 로그인 Oauth2 등록 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
 		
 		<!-- 회원가입 검증 관련 API -->
 		<dependency>

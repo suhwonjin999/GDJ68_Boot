@@ -1,6 +1,11 @@
 package com.winter.app.member;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -16,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class MemberService implements UserDetailsService {
+public class MemberService extends DefaultOAuth2UserService implements UserDetailsService {
 
 	// DAO 
 	@Autowired
@@ -24,6 +34,100 @@ public class MemberService implements UserDetailsService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	// Social Login
+	// 로그인하여 사용자 정보를 userRequest에 담아서 가져온다.
+	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		// TODO Auto-generated method stub
+		ClientRegistration clientRegistration = userRequest.getClientRegistration();
+		// clientRegistration에 provider 의 정보를 담고있다. 
+		log.info("===== {} =======", clientRegistration);
+		log.info("===== Social Login 처리 진행 ======");
+		
+		// super : 부모의 메서드 (DefaultOAuth2UserService 안에 있는 메서드를 의미함.)
+		// super 를 제외시킬 수 있지만, 자기 자신을 호출하면 무한반복으로 실행됨.
+//		OAuth2User auth2User = loadUser(userRequest);
+		// 실제 로그인한 사용자의 정보는 super.loadUser(userRequest)에 담고있다.		
+		OAuth2User auth2User = super.loadUser(userRequest);
+		
+		log.info("===== Auth2User : {} =======", auth2User);
+		
+		// social 에 카카오가 들어감. (카카오 로그인의 경우에만)
+		String social = clientRegistration.getReqistrationId();
+		if(social.equals("kakao")) {
+			auth2User = this.forKakao(auth2User);
+		}
+		
+		return auth2User; // 실제 유저 정보
+	}
+	
+	// MemberVO 가 UserDetail 타입도 되고, OAuth2User 타입도 된다. 
+	private OAuth2User forKakao(OAuth2User auth2User){
+		MemberVO memberVO = new MemberVO();
+//		memberVO.setUsername();
+		// getClass() : 리턴 타입을 모를 경우, 클래스명이 무엇인지 확인
+		Object obj = auth2User.getAttribute("properties").getClass();
+		log.info("1***** {} ***** " , obj);
+		LinkedHashMap<String, Object> map = auth2User.getAttribute("properties");
+		log.info("===== {} ===== " , auth2User.getAttribute("properties").toString());
+		
+		LinkedHashMap<String, Object> kakaoAccount = auth2User.getAttribute("kakao_account");
+		LinkedHashMap<String, Object> profile = auth2User.getAttribute("kakao_account");
+		
+		profile = (LinkedHashMap<String, Object>)profile.get("profile");
+
+		log.info("2**** {} **** ", profile);
+		log.info("=== NickName : {} ===", profile.get("nickname"));
+		log.info("=== ProfileImage : {} ===", profile.get("profile_image_url"));
+		log.info("=== Email : {} ===", kakaoAccount.get("email"));
+		log.info("=== Birth : {} ===", kakaoAccount.get("birthday"));
+		// 최종목적지 : profile을 꺼내어 닉네임 정보를 알 수 있다.
+		
+		String birth = kakaoAccount.get("birthday").toString();
+		// 시작인덱스 번호 이상, 끝 인덱스번호 미만
+		String month = birth.substring(0, 2);
+		String day = birth.substring(2);
+		
+		Calendar ca = Calendar.getInstance();
+		// 날짜를 다루는 클래스는 Calendar 이다.
+		int y = ca.get(Calendar.YEAR);
+		StringBuffer sb = new StringBuffer();
+//		sb.append(y).append("-").append(month).append("-").append(day);
+		sb.append(y);
+		sb.append("-");
+		sb.append(month);
+		sb.append("-");
+		sb.append(day);
+		
+		// LinkedHashMap<String, Object> 타입이면 toString() 하여 문자열 타입으로 변경해줘야 한다.
+		// LinkedHashMap<String, String> 타입이면 toString() 해줄 필요 없다.
+		memberVO.setUsername(map.get("nickname").toString());
+		memberVO.setEmail(kakaoAccount.get("email").toString());
+		
+		memberVO.setAttributes(auth2User.getAttributes());
+		
+		List<RoleVO> list = new ArrayList<>();
+		RoleVO roleVO = new RoleVO();
+		roleVO.setRoleName("ROLE_MEMBER");
+		
+		list.add(roleVO);
+		
+		memberVO.setRoleVOs(list);
+		
+// String 타입을 Date 타입으로 변환시켜야 함. (구분자를 이용하여 생년월일을 집어넣자. // 년도없이 월일만 받았음 // Age를 받으면 년도가 계산됨.// 년도 아무거나 넣어도 상관없음)
+		log.info("Date : {}", Date.valueOf(kakaoAccount.get("birthday").toString()));
+		log.info("Date : {}", Date.valueOf("09-09")); //null
+		log.info("==== Date : {} ====", Date.valueOf(sb.toString()));
+//		memberVO.setBirth(kakaoAccount.get("birthday"));
+		
+		
+		
+		return memberVO;
+	}
+	
+	
+	
 	
 	// login
 //	public MemberVO getLogin(MemberVO memberVO) throws Exception {
@@ -75,6 +179,7 @@ public class MemberService implements UserDetailsService {
 	// 필터 : 디스패쳐 서블렛으로 가기 전
 	// 일반 필터 뒤에 위치한다.
 	// 파라미터를 userName과 password를 넘겼는데 매개변수로 userName을 꺼내온다.
+	// 상속은 하나까지, 구현은 여러개 가능함.
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub

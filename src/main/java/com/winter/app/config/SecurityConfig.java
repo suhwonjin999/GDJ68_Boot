@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration.ProviderDetails.UserInfoEndpoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.winter.app.member.MemberService;
@@ -90,12 +91,17 @@ public class SecurityConfig {
 				// 쿠키 지워줌
 				.deleteCookies("JSESSIONID") 
 				.and()
-			.remeberMe()
+			.rememberMe()
 				.tokenValiditySeconds(60)
 // properties 에 등록하고 key로 등록되는 변수값을 가져오는 방법도 있다.
 				.key("rememberKey")
 				.userDetailsService(memberService)
 //				.authenticationSuccessHandler(handler)
+				.and()
+//			.oauth2Login()
+//				.userInfoEndpoint()
+//				.userService()
+//				.and()
 				
 			.sessionManagement()
 			;
